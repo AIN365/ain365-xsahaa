@@ -1,0 +1,19 @@
+{
+  "welcomeFile": "sap/bc/ina/service/v2/GetServerInfo",
+  "routes": [
+    {
+      "source": "^/sap/bc/ina/(.*)$",
+      "destination": "XSAHAA_BACKEND",
+      "httpMethods": ["POST", "GET"],
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/sap/bc/ina/(.*)$",
+      "destination": "XSAHAA_BACKEND",
+      "httpMethods": ["OPTIONS"],
+      "authenticationType": "none",
+      "csrfProtection": false
+    }
+  ]
+}

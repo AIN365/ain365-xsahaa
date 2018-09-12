@@ -1,0 +1,50 @@
+_schema-version: '2.0'
+ID: ain365-xsahaa
+version: 1.0.0
+
+modules:
+  - name: ain365-xsahaa
+    type: nodejs
+    path: approuter
+    parameters:
+      memory: 256M
+      host: ain365-xsahaa
+    requires:
+      - name: UAA_NAME
+      - name: xsahaa-backend
+        group: destinations
+        properties:
+          name: XSAHAA_BACKEND
+          url: ~{url}
+          forwardAuthToken: true
+          strictSSL: true
+
+  - name: ain365-xsahaa-backend
+    type: java
+    path: xsahaa
+    parameters:
+      memory: 512M
+      buildpack: sap_java_buildpack
+      host: ain365-xsahaa-backend
+    properties:
+      TARGET_RUNTIME: tomee
+      JBP_CONFIG_RESOURCE_CONFIGURATION: "['tomee/webapps/ROOT/WEB-INF/web.xml': {'cors-origins':'SAC_URL'},
+                                           'tomee/webapps/ROOT/WEB-INF/resources.xml': {'xsahaa-hdi-container':'HDI_NAME'}]"
+      SAP_JWT_TRUST_ACL: [{"clientid":"*","identityzone":"*"}]
+    provides:
+      - name: xsahaa-backend
+        properties:
+          url: "${default-url}"
+    requires:
+      - name: UAA_NAME
+      - name: HDI_NAME
+
+resources:
+  - name: UAA_NAME
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: UAA_NAME
+  - name: HDI_NAME
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: HDI_NAME
